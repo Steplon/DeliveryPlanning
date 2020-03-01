@@ -36,8 +36,19 @@ namespace DeliveryPlanning
             //services.AddDbContext<DeliveryPlanningContext>(options => options.UseSqlServer(
             //Configuration.GetConnectionString("DeliveryPlanningContextConnection")));
 
-            services.AddDbContext<DeliveryPlanningContext>(options => options.UseSqlServer(
-            Configuration.GetConnectionString("DeliveryPlanningSQLDBConnection")));
+            //services.AddDbContext<DeliveryPlanningContext>(options => options.UseSqlServer(
+            //Configuration.GetConnectionString("DeliveryPlanningSQLDBConnection")));
+
+            // Use SQL Database if in Azure, otherwise, use SQLite
+            //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                services.AddDbContext<DeliveryPlanningContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DeliveryPlanningSQLDBConnection")));
+            //else
+            //    services.AddDbContext<DeliveryPlanningContext>(options => options.UseSqlServer(
+            //    Configuration.GetConnectionString("DeliveryPlanningContextConnection")));
+
+            //    // Automatically perform database migration
+                services.BuildServiceProvider().GetService<DeliveryPlanningContext>().Database.Migrate();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
